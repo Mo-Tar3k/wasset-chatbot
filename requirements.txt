@@ -1,11 +1,12 @@
 Flask
 pandas
-langchain
-sentence-transformers
 torch
 transformers
+sentence-transformers
 faiss-cpu
 gunicorn
+langchain
 langchain-community
+langchain-huggingface
 tokenizers
 tiktoken
