@@ -127,5 +127,6 @@ def ask():
             'context': []
         }), 500
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+# Handler for Vercel
+def handler(environ, start_response):
+    return app(environ, start_response)
