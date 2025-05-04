@@ -3,7 +3,8 @@ pandas
 langchain
 sentence-transformers
 torch
-transformers==4.31.0
+transformers
 faiss-cpu
 gunicorn
 langchain-community
+tokenizers==0.13.3
