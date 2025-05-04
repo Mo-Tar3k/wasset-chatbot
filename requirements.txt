@@ -1,0 +1,8 @@
+Flask
+pandas
+langchain
+sentence-transformers
+torch
+transformers
+faiss-cpu
+gunicorn
