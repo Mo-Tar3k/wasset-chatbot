@@ -7,4 +7,4 @@ transformers
 faiss-cpu
 gunicorn
 langchain-community
-tokenizers==0.13.3
+tokenizers
