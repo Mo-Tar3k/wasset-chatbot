@@ -2,7 +2,8 @@ Flask
 pandas
 langchain
 sentence-transformers
-torch
-transformers
+torch==2.0.1
+transformers==4.31.0
 faiss-cpu
 gunicorn
+langchain-community
