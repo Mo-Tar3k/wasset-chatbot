@@ -1,3 +1,5 @@
+print("✅ Flask server is starting...")  # تم إضافته لتأكيد التشغيل
+
 from flask import Flask, request, jsonify, render_template_string
 import pandas as pd
 from langchain.text_splitter import TokenTextSplitter
