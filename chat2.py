@@ -1,4 +1,4 @@
-print("\u2705 Flask server is starting...")  # لتأكيد التشغيل
+print("✅ Flask server is starting...")  # تم إضافته لتأكيد التشغيل
 
 from flask import Flask, request, jsonify, render_template_string
 import pandas as pd
@@ -8,7 +8,6 @@ from langchain.prompts import PromptTemplate
 from langchain.chains.question_answering import load_qa_chain
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.llms import HuggingFacePipeline
-from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 import torch
 import os
@@ -95,7 +94,7 @@ HTML_TEMPLATE = '''
             if (!res.ok || !contentType.includes("application/json")) {
                 const errorText = await res.text();
                 console.error("Error:", errorText);
-                document.getElementById("answer").innerText = "\u26a0\ufe0f Server error. Check logs.";
+                document.getElementById("answer").innerText = "⚠️ Server error. Check logs.";
                 return;
             }
             const data = await res.json();
