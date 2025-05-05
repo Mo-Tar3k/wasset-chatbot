@@ -127,6 +127,3 @@ def ask():
             'context': []
         }), 500
 
-# Handler for Vercel
-def handler(environ, start_response):
-    return app(environ, start_response)
