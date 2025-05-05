@@ -13,7 +13,7 @@ import os
 import traceback
 
 # Load CSV and process data
-df = pd.read_csv("products_dataset (1).csv")
+df = pd.read_csv("products_dataset.csv")
 documents = df["description"].astype(str).tolist()
 metadatas = [
     {"product_id": row["product_id"], "title": row["title"]}
