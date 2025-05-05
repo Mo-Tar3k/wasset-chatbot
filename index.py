@@ -11,8 +11,8 @@ import torch
 import os
 import traceback
 
-# Load CSV and process data
-df = pd.read_csv("products_dataset.csv")
+# Load and truncate CSV data
+df = pd.read_csv("products_dataset.csv").head(100)  # خدت أول 100 بس
 documents = df["description"].astype(str).tolist()
 metadatas = [
     {"product_id": row["product_id"], "title": row["title"]}
@@ -103,7 +103,7 @@ def index():
 def ask():
     question = request.form.get('question')
     try:
-        similar_docs = vector_db.similarity_search(question, k=3)
+        similar_docs = vector_db.similarity_search(question, k=1)
         response = stuff_chain({"input_documents": similar_docs, "question": question}, return_only_outputs=True)
         output_text = response.get('output_text', 'No answer found')
         answer = output_text.split('### Answer:')[1].strip() if '### Answer:' in output_text else output_text
