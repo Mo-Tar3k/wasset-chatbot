@@ -1,18 +1,19 @@
 from flask import Flask, request, jsonify, render_template_string
 import pandas as pd
 from langchain.text_splitter import TokenTextSplitter
-from langchain_community.vectorstores import FAISS  # ✅ التعديل هنا
+from langchain.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
 from langchain.chains.question_answering import load_qa_chain
-from langchain_huggingface import HuggingFaceEmbeddings  # ✅ التعديل هنا
-from langchain_community.llms import HuggingFacePipeline  # ✅ التعديل هنا
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.llms import HuggingFacePipeline
+from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 import torch
 import os
 import traceback
 
-# Load and truncate CSV data
-df = pd.read_csv("products_dataset.csv").head(100)  # خدت أول 100 بس
+# Load CSV and process data
+df = pd.read_csv("products_dataset.csv")
 documents = df["description"].astype(str).tolist()
 metadatas = [
     {"product_id": row["product_id"], "title": row["title"]}
@@ -33,10 +34,18 @@ embedding_model = HuggingFaceEmbeddings(
 # Vector store
 vector_db = FAISS.from_documents(chunks, embedding_model)
 
-# Load lightweight LLM (distilgpt2)
-tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
-model = AutoModelForCausalLM.from_pretrained("distilgpt2")
-pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_length=256)
+# Load TinyLlama model
+CACHE_DIR = "model_cache"
+os.makedirs(CACHE_DIR, exist_ok=True)
+tokenizer = AutoTokenizer.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0", cache_dir=CACHE_DIR)
+model1 = AutoModelForCausalLM.from_pretrained(
+    "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    torch_dtype=torch.bfloat16,
+    device_map="auto",
+    cache_dir=CACHE_DIR
+)
+
+pipe = pipeline("text-generation", model=model1, tokenizer=tokenizer, max_length=256)
 llm = HuggingFacePipeline(pipeline=pipe)
 
 # Prompt template
@@ -103,7 +112,7 @@ def index():
 def ask():
     question = request.form.get('question')
     try:
-        similar_docs = vector_db.similarity_search(question, k=1)
+        similar_docs = vector_db.similarity_search(question, k=3)
         response = stuff_chain({"input_documents": similar_docs, "question": question}, return_only_outputs=True)
         output_text = response.get('output_text', 'No answer found')
         answer = output_text.split('### Answer:')[1].strip() if '### Answer:' in output_text else output_text
@@ -117,3 +126,6 @@ def ask():
             'answer': f"Server error: {str(e)}",
             'context': []
         }), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
